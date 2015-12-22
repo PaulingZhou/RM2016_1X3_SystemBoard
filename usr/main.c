@@ -22,6 +22,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4_discovery.h"
 
+
 /** @addtogroup STM32F4_Discovery_Peripheral_Examples
   * @{
   */
@@ -38,6 +39,9 @@ GPIO_InitTypeDef  GPIO_InitStructure;
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 void Delay(__IO uint32_t nCount);
+void NVIC_Config(void);  
+void STM_EVAL_COMInit(void);
+void USART_Configuration(int BaudRate);
 /* Private functions ---------------------------------------------------------*/
 
 /**
@@ -47,54 +51,17 @@ void Delay(__IO uint32_t nCount);
   */
 int main(void)
 {
-  /*!< At this stage the microcontroller clock setting is already configured, 
-       this is done through SystemInit() function which is called from startup
-       file (startup_stm32f4xx.s) before to branch to application main.
-       To reconfigure the default setting of SystemInit() function, refer to
-        system_stm32f4xx.c file
-     */
-
-  /* GPIOD Periph clock enable */
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
-
-  /* Configure PD12, PD13, PD14 and PD15 in output pushpull mode */
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12 | GPIO_Pin_13| GPIO_Pin_14| GPIO_Pin_15;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(GPIOD, &GPIO_InitStructure);
+	NVIC_Config();
+	STM_EVAL_COMInit();
+	USART_Configuration(9600);
+	USART_ITConfig(USART1,USART_IT_RXNE, ENABLE);
 
   while (1)
   {
-    /* PD12 to be toggled */
-    GPIO_SetBits(GPIOD, GPIO_Pin_12);
-    
-    /* Insert delay */
-    Delay(0x3FFFFF);
-    
-    /* PD13 to be toggled */
-    GPIO_SetBits(GPIOD, GPIO_Pin_13);
-    
-    /* Insert delay */
-    Delay(0x3FFFFF);
-  
-    /* PD14 to be toggled */
-    GPIO_SetBits(GPIOD, GPIO_Pin_14);
-    
-    /* Insert delay */
-    Delay(0x3FFFFF);
-    
-    /* PD15 to be toggled */
-    GPIO_SetBits(GPIOD, GPIO_Pin_15);
-    
-    /* Insert delay */
-    Delay(0x7FFFFF);
-    
-    GPIO_ResetBits(GPIOD, GPIO_Pin_12|GPIO_Pin_13|GPIO_Pin_14|GPIO_Pin_15);
-    
-    /* Insert delay */
-    Delay(0xFFFFFF);
+		USART_SendData(USART1,0x01);
+		Delay(0x3FFFFF);
+		USART_SendData(USART1,0x02);
+		Delay(0x3FFFFF);
   }
 }
 
@@ -108,6 +75,79 @@ void Delay(__IO uint32_t nCount)
   while(nCount--)
   {
   }
+}
+
+
+void NVIC_Config(void)  
+{  
+  NVIC_InitTypeDef NVIC_InitStructure;  
+  
+  /* Enable the USARTx Interrupt */  
+  NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;  
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;  
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;  
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;  
+  NVIC_Init(&NVIC_InitStructure);  
+} 
+
+/** 
+  * @brief  Configures COM port. 
+  * @param  COM: Specifies the COM port to be configured. 
+  *   This parameter can be one of following parameters:     
+  *     @arg COM1 
+  *     @arg COM2   
+  * @param  USART_InitStruct: pointer to a USART_InitTypeDef structure that 
+  *   contains the configuration information for the specified USART peripheral. 
+  * @retval None 
+  */  
+void STM_EVAL_COMInit(void)  
+{  
+  GPIO_InitTypeDef GPIO_InitStructure;  
+  
+  /* Enable GPIO clock */  
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);  
+  /* Enable UART clock */  
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);  
+   
+  /* Connect PXx to USARTx_Tx*/  
+  GPIO_PinAFConfig(GPIOB, GPIO_PinSource6, GPIO_AF_USART1);  
+  /* Connect PXx to USARTx_Rx*/  
+  GPIO_PinAFConfig(GPIOB, GPIO_PinSource7, GPIO_AF_USART1);  
+  
+  /* Configure USART Tx as alternate function  */  
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;  
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;  
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;  
+  
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;  
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;  
+  GPIO_Init(GPIOB, &GPIO_InitStructure);  
+  
+  /* Configure USART Rx as alternate function  */  
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;  
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;  
+  GPIO_Init(GPIOB, &GPIO_InitStructure);  
+} 
+
+/******************************************************************************* 
+* Function Name  : USART_Configuration 
+* Description    : Configures the USART1. 
+* Input          : BaudRate 
+* Output         : None 
+* Return         : None 
+*******************************************************************************/ 
+void USART_Configuration(int BaudRate)
+{
+	USART_InitTypeDef USART_InitStructure;
+	
+	USART_InitStructure.USART_BaudRate = BaudRate;
+	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+	USART_InitStructure.USART_StopBits = USART_StopBits_1;
+	USART_InitStructure.USART_Parity = USART_Parity_No;
+	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+	USART_Init(USART1, &USART_InitStructure);
+	USART_Cmd(USART1, ENABLE);
 }
 
 #ifdef  USE_FULL_ASSERT
