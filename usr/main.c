@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file    IO_Toggle/main.c 
+  * @file    main.c 
   * @author  MCD Application Team
   * @version V1.0.0
   * @date    19-September-2011
@@ -21,18 +21,10 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4_discovery.h"
-
-
-/** @addtogroup STM32F4_Discovery_Peripheral_Examples
-  * @{
-  */
-
-/** @addtogroup IO_Toggle
-  * @{
-  */ 
+#include "spi1.h"
+#include "mpu9250.h"
 
 /* Private typedef -----------------------------------------------------------*/
-GPIO_InitTypeDef  GPIO_InitStructure;
 
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
@@ -51,17 +43,23 @@ void USART_Configuration(int BaudRate);
   */
 int main(void)
 {
+	
 	NVIC_Config();
 	STM_EVAL_COMInit();
 	USART_Configuration(9600);
 	USART_ITConfig(USART1,USART_IT_RXNE, ENABLE);
+	MPU9250_Init();
+//	Delay(0x3FFFFF);
+//	read_mpu9250++;
+	//SPI1_Config();
 
   while (1)
   {
-		USART_SendData(USART1,0x01);
-		Delay(0x3FFFFF);
-		USART_SendData(USART1,0x02);
-		Delay(0x3FFFFF);
+	//	MPU9250_Read_Reg(WHO_AM_I);
+		//SPI1_ReadWriteByte(0x25);
+//		USART_SendData(USART1,MPU9250_Read_Reg(WHO_AM_I));
+		MPU9250_ReadValue();
+		Delay(0xFFFF);
   }
 }
 
@@ -149,6 +147,49 @@ void USART_Configuration(int BaudRate)
 	USART_Init(USART1, &USART_InitStructure);
 	USART_Cmd(USART1, ENABLE);
 }
+
+#ifdef false 
+/******************************************************************************* 
+* Function Name  : I2C_Config 
+* Description    : Config the I2C1	
+* Pin Map				 : PB8-->I2C1_SCL	PB9-->I2C1_SDA 
+* Input          : None 
+* Output         : None 
+* Return         : None 
+*******************************************************************************/
+void I2C_Config(void)
+{
+	GPIO_InitTypeDef GPIO_InitStructure;
+	I2C_InitTypeDef I2C_InitStructure;
+	
+	//使能GPIOB&I2C时钟
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB|RCC_APB1Periph_I2C1, ENABLE);
+	
+	//使PB8复用功能为I2C的SCL;PB9复用功能为I2C的SDA
+	GPIO_PinAFConfig(GPIOB, GPIO_PinSource8, GPIO_AF_I2C1);
+	GPIO_PinAFConfig(GPIOB, GPIO_PinSource9, GPIO_AF_I2C1);
+	
+	//GPIO配置
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8 | GPIO_Pin_9;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
+	
+		
+	//在使用之前先将I2C功能复位
+	I2C_DeInit(I2C1);
+	I2C_InitStructure.I2C_Mode = I2C_Mode_I2C;
+	I2C_InitStructure.I2C_Ack = I2C_Ack_Enable;
+	I2C_InitStructure.I2C_AcknowledgedAddress = I2C_AcknowledgedAddress_7bit;
+//	I2C_InitStructure.I2C_ClockSpeed = ;
+	
+}
+#endif
+
+
+
 
 #ifdef  USE_FULL_ASSERT
 

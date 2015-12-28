@@ -496,6 +496,11 @@
               <FileType>1</FileType>
               <FilePath>.\lib\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_syscfg.c</FilePath>
             </File>
+            <File>
+              <FileName>stm32f4xx_spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\lib\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_spi.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -535,6 +540,26 @@
               <FileName>system_stm32f4xx.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\usr\system_stm32f4xx.c</FilePath>
+            </File>
+            <File>
+              <FileName>spi1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\usr\spi1.c</FilePath>
+            </File>
+            <File>
+              <FileName>spi1.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\usr\spi1.h</FilePath>
+            </File>
+            <File>
+              <FileName>mpu9250.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\usr\mpu9250.c</FilePath>
+            </File>
+            <File>
+              <FileName>mpu9250.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\usr\mpu9250.h</FilePath>
             </File>
           </Files>
         </Group>
