@@ -561,6 +561,16 @@
               <FileType>5</FileType>
               <FilePath>.\usr\mpu9250.h</FilePath>
             </File>
+            <File>
+              <FileName>usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\usr\usart.c</FilePath>
+            </File>
+            <File>
+              <FileName>usart.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\usr\usart.h</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

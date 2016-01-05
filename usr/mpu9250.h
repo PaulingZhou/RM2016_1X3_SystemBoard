@@ -29,7 +29,7 @@ extern int16_t MPU9250_TEMP_LAST;
 #define CONFIG							0X1A //低通滤波器  典型值0x06 5hz
 #define GYRO_CONFIG					0X1B //陀螺仪测量范围 0X18 正负2000度
 #define ACCEL_CONFIG				0X1C //加速度计测量范围 0X18 正负16g
-#define ACCEL_CONFIG2				0X1D //加速度计低通滤波器 0x06 5hz
+#define ACCEL_CONFIG2				0X1D //加速度计低通滤波器 0x0E 5hz
 
 #define LP_ACCEL_ODR				0X1E
 #define WOM_THR							0X1F
@@ -56,11 +56,12 @@ extern int16_t MPU9250_TEMP_LAST;
 #define PWR_MGMT_1					0X6B //电源管理1 典型值为0x00
 #define PWR_MGMT_2					0X6C //电源管理2 典型值为0X00
 
-#define WHO_AM_I						0X75 //器件ID MPU9250默认ID为0X71
+#define WHO_AM_I						0X75 //器件ID MPU9250默认ID为0X73
 #define USER_CTRL						0X6A //用户配置 当为0X10时使用SPI模式
 
 void MPU9250_IOAndSPI_Init(void);
 uint8_t MPU9250_Init(void);
 uint8_t MPU9250_Read_Reg(uint8_t reg);
 uint8_t MPU9250_Write_Reg(uint8_t reg,uint8_t value);
-void MPU9250_ReadValue(void);
+//void MPU9250_ReadValue(void);
+void MPU9250_ReadValue(uint8_t *dataPointer);

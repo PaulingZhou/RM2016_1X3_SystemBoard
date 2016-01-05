@@ -88,7 +88,6 @@ uint8_t SPI1_ReadWriteByte(uint8_t TxData)
 	}
 	SPI_I2S_SendData(SPI1,TxData);
 	retry = 0;
-	
 	while(SPI_I2S_GetFlagStatus(SPI1,SPI_I2S_FLAG_RXNE) == RESET)
 	{
 		retry++;
