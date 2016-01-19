@@ -17,6 +17,7 @@
 #include "spi1.h"
 #include "mpu9250.h"
 #include "usart.h"
+#include "system.h"
 
 /* Private typedef -----------------------------------------------------------*/
 
@@ -24,7 +25,6 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
-void Delay(__IO uint32_t nCount);
 void NVIC_Config(void);  
 /* Private functions ---------------------------------------------------------*/
 
@@ -45,25 +45,11 @@ int main(void)
 	initSuccess = MPU9250_Init();
   while (initSuccess)
   {
-//		MPU9250_ReadValue();
 		MPU9250_ReadValue(mpuData);
 		USART_SendDataArray(USART1,mpuData);
 		Delay(0xFFFF);
   }
 }
-
-/**
-  * @brief  Delay Function.
-  * @param  nCount:specifies the Delay time length.
-  * @retval None
-  */
-void Delay(__IO uint32_t nCount)
-{
-	while(nCount--)
-  {
-  }
-}
-
 
 void NVIC_Config(void)  
 {  

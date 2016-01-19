@@ -1,5 +1,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4_discovery.h"
+#include "system.h"
 
 void delay(void);
 
@@ -74,33 +75,24 @@ void USART_SendDataArray(USART_TypeDef* USARTx,uint8_t *arrayPointer)
 {
 	uint8_t length = 14,i,checksum=0x00;
   /* Check the parameters */
-//  assert_param(IS_USART_ALL_PERIPH(USARTx));
-//  assert_param(IS_USART_DATA(MPU9250_buf)); 
+  assert_param(IS_USART_ALL_PERIPH(USARTx));
+  assert_param(IS_USART_DATA(MPU9250_buf)); 
     
   /* Transmit Data */
 	USART_SendData(USART1,0xAA);
-	delay();
+	Delay(0xFFFF);
 	USART_SendData(USART1,0xBB);
-	delay();
+	Delay(0xFFFF);
 	USART_SendData(USART1,length);
-	delay();
+	Delay(0xFFFF);
 	checksum^=length;
 	for(i=0;i<length;i++)
 	{
 		USART_SendData(USART1,*arrayPointer);
-		delay();
+		Delay(0xFFFF);
 		checksum^=*arrayPointer;
 		arrayPointer = arrayPointer+1;
 	}
 	USART_SendData(USART1,checksum);
-	delay();
-}
-
-void delay(void)
-{
-	uint16_t count = 0xFFFF;
-	while(count--)
-  {
-		;
-  }
+	Delay(0xFFFF);
 }

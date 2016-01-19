@@ -571,6 +571,16 @@
               <FileType>5</FileType>
               <FilePath>.\usr\usart.h</FilePath>
             </File>
+            <File>
+              <FileName>system.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\usr\system.c</FilePath>
+            </File>
+            <File>
+              <FileName>system.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\usr\system.h</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

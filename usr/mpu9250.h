@@ -4,10 +4,10 @@ typedef struct{
 				int16_t X;
 				int16_t Y;
 				int16_t Z;}S_INT16_XYZ;
-extern S_INT16_XYZ MPU9250_ACC_LAST;
-extern S_INT16_XYZ MPU9250_GYRO_LAST;
-extern S_INT16_XYZ MPU9250_MAG_LAST;
-extern int16_t MPU9250_TEMP_LAST;
+//extern S_INT16_XYZ MPU9250_ACC_LAST;
+//extern S_INT16_XYZ MPU9250_GYRO_LAST;
+//extern S_INT16_XYZ MPU9250_MAG_LAST;
+//extern int16_t MPU9250_TEMP_LAST;
 
 //寄存器定义
 #define SELF_TEST_X_GYRO		0X00
@@ -52,6 +52,38 @@ extern int16_t MPU9250_TEMP_LAST;
 #define GYRO_ZOUT_H					0X47
 #define GYRO_ZOUT_L					0X48
 
+//陀螺仪量程
+#define GYRO_250DPS					0x00	//sensitivity 131LSB/dps
+#define GYRO_500DPS					0x08	//sensitivity 65.5LSB/dps
+#define GYRO_1000DPS				0x10	//sensitivity 32.8LSB/dps
+#define GYRO_2000DPS				0x18	//sensitivity 16.4LSB/dps
+
+//加速度计量程
+#define ACC_2G							0x00	//sensitivity 16384LSB/g
+#define ACC_4G							0x08	//sensitivity 8192LSB/g
+#define ACC_8G							0x10	//sensitivity 4096LSB/g
+#define ACC_16G							0x18	//sensitivity 2048LSB/g
+
+//陀螺仪输出带宽(低通滤波器)
+#define GYRO_BW_3600				0X07
+#define GYRO_BW_250					0X00
+#define GYRO_BW_184					0X01
+#define GYRO_BW_92					0X02
+#define GYRO_BW_41					0X03
+#define GYRO_BW_20					0X04
+#define GYRO_BW_10					0X05
+#define GYRO_BW_5						0X06
+
+
+//加速度计输出带宽(低通滤波器)
+#define ACC_BW_1130					0x00
+#define ACC_BW_460					0x08
+#define ACC_BW_184					0x09
+#define ACC_BW_92						0x0A
+#define ACC_BW_41						0x0B
+#define ACC_BW_20						0x0C
+#define ACC_BW_10						0x0D
+#define ACC_BW_5						0x0E
 
 #define PWR_MGMT_1					0X6B //电源管理1 典型值为0x00
 #define PWR_MGMT_2					0X6C //电源管理2 典型值为0X00
@@ -59,9 +91,13 @@ extern int16_t MPU9250_TEMP_LAST;
 #define WHO_AM_I						0X75 //器件ID MPU9250默认ID为0X73
 #define USER_CTRL						0X6A //用户配置 当为0X10时使用SPI模式
 
-void MPU9250_IOAndSPI_Init(void);
+//mpu9250 nCS
+#define SPIx_CS_H           GPIO_SetBits(SPIx_CS_GPIO_PORT,SPIx_CS_PIN)
+#define SPIx_CS_L           GPIO_ResetBits(SPIx_CS_GPIO_PORT,SPIx_CS_PIN)
+#define SPIx_CS_GPIO_PORT		GPIOB
+#define SPIx_CS_PIN					GPIO_Pin_8
+
 uint8_t MPU9250_Init(void);
 uint8_t MPU9250_Read_Reg(uint8_t reg);
 uint8_t MPU9250_Write_Reg(uint8_t reg,uint8_t value);
-//void MPU9250_ReadValue(void);
 void MPU9250_ReadValue(uint8_t *dataPointer);
